@@ -6,9 +6,16 @@ import PackageDescription
 let package = Package(
     name: "xframes-swift",
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .executableTarget(
-            name: "xframes-swift"),
+            name: "xframes-swift",
+            publicHeadersPath: "./Sources/include",
+            linkerSettings: [
+                .linkedLibrary("xframesshared"), // Link the library without the "lib" prefix and ".so" extension
+                .unsafeFlags(["-L./"])
+            ]
+        )
+    ],
+    swiftSettings: [
+        .enableExperimentalFeature("Extern")  // Enable the 'Extern' experimental feature
     ]
 )

@@ -41,3 +41,9 @@ $ file .build/x86_64-swift-linux-musl/debug/xframes-swift
 ```
 
 The file size is > 40MB but it supposedly 'just works', no need to install any dependencies.
+
+### Running the app
+
+#### Linux
+
+`export LD_LIBRARY_PATH=/path/to/xframes/library:$LD_LIBRARY_PATH`
