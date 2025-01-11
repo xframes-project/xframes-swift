@@ -84,6 +84,18 @@ struct FontDefsContainer: Codable {
     let defs: [FontDef]
 }
 
+struct Node: Codable {
+    let id: Int
+    let type: String
+    let root: Bool
+}
+
+struct UnformattedText: Codable {
+    let id: Int
+    let type: String
+    let text: String
+}
+
 typealias OnInitCb = @convention(c) () -> Void
 typealias OnTextChangedCb = @convention(c) (Int32, UnsafePointer<CChar>) -> Void
 typealias OnComboChangedCb = @convention(c) (Int32, Int32) -> Void
@@ -104,8 +116,36 @@ func initXFrames(assetsBasePath: UnsafePointer<CChar>,
     onMultipleNumericValuesChanged: @escaping OnMultipleNumericValuesChangedCb,
     onClick: @escaping OnClickCb)
 
+@_extern(c, "setElement")
+func setElement(elementJSON: UnsafePointer<CChar>)
+
+@_extern(c, "setChildren")
+func setChildren(parentId: Int32, childrenIdsJson: UnsafePointer<CChar>)
+
 func onInit() {
     print("Initialization complete!")
+
+    let rootNode = Node(id: 0, type: "node", root: true)
+
+    let rootNodeJsonData = try! JSONEncoder().encode(rootNode)
+    let rootNodeJson = String(data: rootNodeJsonData, encoding: .utf8)!
+    let rootNodeCString = rootNodeJson.cString(using: .utf8)!
+
+    let unformattedText = UnformattedText(id: 1, type: "unformatted-text", text: "Hello, world")
+
+    let unformattedTextJsonData = try! JSONEncoder().encode(unformattedText)
+    let unformattedTextJson = String(data: unformattedTextJsonData, encoding: .utf8)!
+    let unformattedTextCString = unformattedTextJson.cString(using: .utf8)!
+
+    setElement(elementJSON: rootNodeCString)
+    setElement(elementJSON: unformattedTextCString)
+
+    let childrenIds: [Int32] = [1]
+    let childrenIdsJsonData = try! JSONEncoder().encode(childrenIds)
+    let childrenIdsJson = String(data: childrenIdsJsonData, encoding: .utf8)!
+    let childrenIdsCString = childrenIdsJson.cString(using: .utf8)!
+
+    setChildren(parentId: 0, childrenIdsJson: childrenIdsCString)
 }
 
 func onTextChanged(id: Int32, text: UnsafePointer<CChar>) {
