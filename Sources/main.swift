@@ -1,5 +1,13 @@
-// import BridgingHeader
 import Foundation
+
+struct FontDef: Codable {
+    let name: String
+    let size: Int
+}
+
+struct FontDefsContainer: Codable {
+    let defs: [FontDef]
+}
 
 typealias OnInitCb = @convention(c) () -> Void
 typealias OnTextChangedCb = @convention(c) (Int32, UnsafePointer<CChar>) -> Void
@@ -9,23 +17,8 @@ typealias OnBooleanValueChangedCb = @convention(c) (Int32, Bool) -> Void
 typealias OnMultipleNumericValuesChangedCb = @convention(c) (Int32, UnsafeMutablePointer<Float>, Int32) -> Void
 typealias OnClickCb = @convention(c) (Int32) -> Void
 
-// func initializeLibrary(
-//     assetsBasePath: UnsafePointer<CChar>,
-//     rawFontDefinitions: UnsafePointer<CChar>,
-//     rawStyleOverrideDefinitions: UnsafePointer<CChar>,
-//     onInit: @escaping OnInitCb,
-//     onTextChanged: @escaping OnTextChangedCb,
-//     onComboChanged: @escaping OnComboChangedCb,
-//     onNumericValueChanged: @escaping OnNumericValueChangedCb,
-//     onBooleanValueChanged: @escaping OnBooleanValueChangedCb,
-//     onMultipleNumericValuesChanged: @escaping OnMultipleNumericValuesChangedCb,
-//     onClick: @escaping OnClickCb
-// ) {
-    
-// }
-
 @_extern(c, "init")
-func initt(assetsBasePath: UnsafePointer<CChar>,
+func initXFrames(assetsBasePath: UnsafePointer<CChar>,
     rawFontDefinitions: UnsafePointer<CChar>,
     rawStyleOverrideDefinitions: UnsafePointer<CChar>,
     onInit: @escaping OnInitCb,
@@ -67,14 +60,25 @@ func onClick(id: Int32) {
 }
 
 func main() {
+    let fontDefsContainer = FontDefsContainer(
+        defs: [
+            (name: "roboto-regular", sizes: [16, 18, 20, 24, 28, 32, 36, 48])
+        ].flatMap { (name, sizes) in
+            sizes.map { size in FontDef(name: name, size: size) }
+        }
+    )
+
+    let rawFontDefsJsonData = try! JSONEncoder().encode(fontDefsContainer)
+    let rawFontDefsJson = String(data: rawFontDefsJsonData, encoding: .utf8)!
+    print("JSON Output:\n\(rawFontDefsJson)")
+
     let assetsBasePath = "./assets".cString(using: .utf8)!
-    let fontDefs = "{}".cString(using: .utf8)!
+    let rawFontDefsCString = rawFontDefsJson.cString(using: .utf8)!
     let styleDefs = "{}".cString(using: .utf8)!
 
-    // Call the init function with callbacks
-    initt(
+    initXFrames(
         assetsBasePath: assetsBasePath,
-        rawFontDefinitions: fontDefs,
+        rawFontDefinitions: rawFontDefsCString,
         rawStyleOverrideDefinitions:styleDefs,
         onInit: onInit,
         onTextChanged: onTextChanged,
