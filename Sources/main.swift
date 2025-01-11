@@ -25,7 +25,7 @@ typealias OnClickCb = @convention(c) (Int32) -> Void
 // }
 
 @_extern(c, "init")
-func `init`(assetsBasePath: UnsafePointer<CChar>,
+func initt(assetsBasePath: UnsafePointer<CChar>,
     rawFontDefinitions: UnsafePointer<CChar>,
     rawStyleOverrideDefinitions: UnsafePointer<CChar>,
     onInit: @escaping OnInitCb,
@@ -36,53 +36,53 @@ func `init`(assetsBasePath: UnsafePointer<CChar>,
     onMultipleNumericValuesChanged: @escaping OnMultipleNumericValuesChangedCb,
     onClick: @escaping OnClickCb)
 
-func onInitCallback() {
+func onInit() {
     print("Initialization complete!")
 }
 
-func onTextChangedCallback(id: Int32, text: UnsafePointer<CChar>) {
+func onTextChanged(id: Int32, text: UnsafePointer<CChar>) {
     let textStr = String(cString: text)
     print("Text changed for id \(id): \(textStr)")
 }
 
-func onComboChangedCallback(id: Int32, value: Int32) {
+func onComboChanged(id: Int32, value: Int32) {
     print("Combo changed for id \(id), value: \(value)")
 }
 
-func onNumericValueChangedCallback(id: Int32, value: Float) {
+func onNumericValueChanged(id: Int32, value: Float) {
     print("Numeric value changed for id \(id): \(value)")
 }
 
-func onBooleanValueChangedCallback(id: Int32, value: Bool) {
+func onBooleanValueChanged(id: Int32, value: Bool) {
     print("Boolean value changed for id \(id): \(value)")
 }
 
-func onMultipleNumericValuesChangedCallback(id: Int32, values: UnsafeMutablePointer<Float>, numValues: Int32) {
+func onMultipleNumericValuesChanged(id: Int32, values: UnsafeMutablePointer<Float>, numValues: Int32) {
     let valuesArray = Array(UnsafeBufferPointer(start: values, count: Int(numValues)))
     print("Multiple numeric values changed for id \(id): \(valuesArray)")
 }
 
-func onClickCallback(id: Int32) {
+func onClick(id: Int32) {
     print("Click event for id \(id)")
 }
 
 func main() {
-    let assetsPath = "./assets".cString(using: .utf8)!
+    let assetsBasePath = "./assets".cString(using: .utf8)!
     let fontDefs = "{}".cString(using: .utf8)!
     let styleDefs = "{}".cString(using: .utf8)!
 
     // Call the init function with callbacks
-    `init`(
-        assetsBasePath,
-        rawFontDefinitions,
-        rawStyleOverrideDefinitions,
-        onInit,
-        onTextChanged,
-        onComboChanged,
-        onNumericValueChanged,
-        onBooleanValueChanged,
-        onMultipleNumericValuesChanged,
-        onClick
+    initt(
+        assetsBasePath: assetsBasePath,
+        rawFontDefinitions: fontDefs,
+        rawStyleOverrideDefinitions:styleDefs,
+        onInit: onInit,
+        onTextChanged: onTextChanged,
+        onComboChanged: onComboChanged,
+        onNumericValueChanged: onNumericValueChanged,
+        onBooleanValueChanged: onBooleanValueChanged,
+        onMultipleNumericValuesChanged: onMultipleNumericValuesChanged,
+        onClick: onClick
     )
 
     print("Press Enter to continue...")

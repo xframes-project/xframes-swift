@@ -8,14 +8,10 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "xframes-swift",
-            publicHeadersPath: "./Sources/include",
             linkerSettings: [
                 .linkedLibrary("xframesshared"), // Link the library without the "lib" prefix and ".so" extension
                 .unsafeFlags(["-L./"])
             ]
         )
-    ],
-    swiftSettings: [
-        .enableExperimentalFeature("Extern")  // Enable the 'Extern' experimental feature
     ]
 )
