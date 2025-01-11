@@ -52,6 +52,11 @@ The file size is > 40MB but it supposedly 'just works', no need to install any d
 
 ## Screenshots
 
+Windows 11
+
+![image](https://github.com/user-attachments/assets/aff40443-a704-4632-829b-6a3785a63b58)
+
+
 Ubuntu 24.04
 
 ![image](https://github.com/user-attachments/assets/bd2af4ef-08a3-45b7-a84a-92c4c7c347f7)
