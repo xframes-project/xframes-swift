@@ -4,6 +4,10 @@
 
 ### Installing Swift
 
+#### Windows
+
+https://www.swift.org/install/windows/winget/
+
 #### Linux
 
 On Ubuntu:
